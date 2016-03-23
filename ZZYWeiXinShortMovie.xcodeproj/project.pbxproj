@@ -15,6 +15,9 @@
 		22C0E6B31CA2A6580009C068 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22C0E6B11CA2A6580009C068 /* LaunchScreen.storyboard */; };
 		22C0E6BE1CA2A6590009C068 /* ZZYWeiXinShortMovieTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C0E6BD1CA2A6590009C068 /* ZZYWeiXinShortMovieTests.m */; };
 		22C0E6C91CA2A6590009C068 /* ZZYWeiXinShortMovieUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C0E6C81CA2A6590009C068 /* ZZYWeiXinShortMovieUITests.m */; };
+		22C0E6D81CA2A6880009C068 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C0E6D71CA2A6880009C068 /* Camera.m */; };
+		22C0E6DB1CA2AC880009C068 /* TakeMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C0E6DA1CA2AC880009C068 /* TakeMovieViewController.m */; };
+		22C0E6DE1CA2AD020009C068 /* StartButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C0E6DD1CA2AD020009C068 /* StartButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,12 @@
 		22C0E6C41CA2A6590009C068 /* ZZYWeiXinShortMovieUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZZYWeiXinShortMovieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C0E6C81CA2A6590009C068 /* ZZYWeiXinShortMovieUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZZYWeiXinShortMovieUITests.m; sourceTree = "<group>"; };
 		22C0E6CA1CA2A6590009C068 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22C0E6D61CA2A6880009C068 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		22C0E6D71CA2A6880009C068 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Camera.m; sourceTree = "<group>"; };
+		22C0E6D91CA2AC880009C068 /* TakeMovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakeMovieViewController.h; sourceTree = "<group>"; };
+		22C0E6DA1CA2AC880009C068 /* TakeMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TakeMovieViewController.m; sourceTree = "<group>"; };
+		22C0E6DC1CA2AD020009C068 /* StartButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartButton.h; sourceTree = "<group>"; };
+		22C0E6DD1CA2AD020009C068 /* StartButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +114,7 @@
 				22C0E6A71CA2A6580009C068 /* AppDelegate.m */,
 				22C0E6A91CA2A6580009C068 /* ViewController.h */,
 				22C0E6AA1CA2A6580009C068 /* ViewController.m */,
+				22C0E6DF1CA2B4980009C068 /* ZZYTakeMovieComtroller */,
 				22C0E6AC1CA2A6580009C068 /* Main.storyboard */,
 				22C0E6AF1CA2A6580009C068 /* Assets.xcassets */,
 				22C0E6B11CA2A6580009C068 /* LaunchScreen.storyboard */,
@@ -138,6 +148,19 @@
 				22C0E6CA1CA2A6590009C068 /* Info.plist */,
 			);
 			path = ZZYWeiXinShortMovieUITests;
+			sourceTree = "<group>";
+		};
+		22C0E6DF1CA2B4980009C068 /* ZZYTakeMovieComtroller */ = {
+			isa = PBXGroup;
+			children = (
+				22C0E6D61CA2A6880009C068 /* Camera.h */,
+				22C0E6D71CA2A6880009C068 /* Camera.m */,
+				22C0E6DC1CA2AD020009C068 /* StartButton.h */,
+				22C0E6DD1CA2AD020009C068 /* StartButton.m */,
+				22C0E6D91CA2AC880009C068 /* TakeMovieViewController.h */,
+				22C0E6DA1CA2AC880009C068 /* TakeMovieViewController.m */,
+			);
+			name = ZZYTakeMovieComtroller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,7 +296,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22C0E6DE1CA2AD020009C068 /* StartButton.m in Sources */,
+				22C0E6D81CA2A6880009C068 /* Camera.m in Sources */,
 				22C0E6AB1CA2A6580009C068 /* ViewController.m in Sources */,
+				22C0E6DB1CA2AC880009C068 /* TakeMovieViewController.m in Sources */,
 				22C0E6A81CA2A6580009C068 /* AppDelegate.m in Sources */,
 				22C0E6A51CA2A6580009C068 /* main.m in Sources */,
 			);
@@ -416,7 +442,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZZYWeiXinShortMovie/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GLaDOS.ZZYWeiXinShortMovie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -427,7 +455,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZZYWeiXinShortMovie/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.GLaDOS.ZZYWeiXinShortMovie;
 				PRODUCT_NAME = "$(TARGET_NAME)";

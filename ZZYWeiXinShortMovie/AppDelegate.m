@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "TakeMovieViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -16,7 +16,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+//    TakeMovieViewController *tmvc = [[TakeMovieViewController alloc]init];
+//    self.window.rootViewController = tmvc;
     return YES;
 }
 
