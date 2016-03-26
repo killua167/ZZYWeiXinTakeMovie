@@ -9,5 +9,6 @@
 #import "ViewController.h"
 
 @interface TakeMovieViewController : ViewController
-
+@property (nonatomic,assign) CGFloat cameraTime;
+@property (nonatomic,assign) NSInteger frameNum;
 @end

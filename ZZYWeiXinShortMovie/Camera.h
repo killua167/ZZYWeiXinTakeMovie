@@ -22,7 +22,7 @@
 @property (nonatomic,strong) AVCaptureDeviceInput *deviceInput;
 @property (nonatomic,strong) AVCaptureVideoDataOutput *deviceVideoOutput;
 @property (nonatomic,strong) UIView *cameraView;
-
+@property (nonatomic,assign) NSInteger frameNum;
 //开始拍摄
 -(void)startCamera;
 //停止拍摄

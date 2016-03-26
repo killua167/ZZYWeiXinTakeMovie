@@ -7,8 +7,10 @@
 //
 
 #import "ViewController.h"
-
+#import "TakeMovieViewController.h"
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet UITextField *setFrameTF;
+@property (weak, nonatomic) IBOutlet UITextField *setCameraTimeTF;
 
 @end
 
@@ -17,6 +19,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+- (IBAction)takeAction:(id)sender {
+    TakeMovieViewController *TMVC = [[TakeMovieViewController alloc]init];
+    TMVC.frameNum = [_setFrameTF.text integerValue];
+    TMVC.cameraTime = [_setCameraTimeTF.text floatValue];
+    [self.navigationController pushViewController:TMVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

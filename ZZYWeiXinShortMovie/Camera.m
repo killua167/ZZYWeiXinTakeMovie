@@ -30,7 +30,7 @@
         if ([_session canAddOutput:_deviceVideoOutput]) {
             [_session addOutput:_deviceVideoOutput];
         }
-        //配置帧数
+        //配置默认帧数1秒10帧
         [_session beginConfiguration];
         if ([_device lockForConfiguration:&error]) {
             [_device setActiveVideoMaxFrameDuration:CMTimeMake(1, 10)];
@@ -66,6 +66,7 @@
     [_videoPreviewLayer addSublayer:focusView.layer];
     [self focusViewAnimation:view.center];
 }
+//点击手势响应方法
 -(void)tapToFocus:(UITapGestureRecognizer*)gestureRecognizer{
     CGPoint point = [gestureRecognizer locationInView:_cameraView];
     CGPoint focusPoint = CGPointMake(point.x/_cameraView.frame.size.width, point.y/_cameraView.frame.size.height);
@@ -112,6 +113,18 @@
             focusView.alpha = 0;
         }];
     }];
+}
+//配置自定义拍摄帧数
+- (void)setFrameNum:(NSInteger)frameNum{
+    _frameNum = frameNum;
+    [_session beginConfiguration];
+    NSError *error;
+    if ([_device lockForConfiguration:&error]) {
+        [_device setActiveVideoMaxFrameDuration:CMTimeMake(1, (int)_frameNum)];
+        [_device setActiveVideoMinFrameDuration:CMTimeMake(1, (int)_frameNum)];
+        [_device unlockForConfiguration];
+    }
+    [_session commitConfiguration];
 }
 //开始拍摄
 -(void)startCamera{

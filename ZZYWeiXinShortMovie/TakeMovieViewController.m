@@ -62,6 +62,7 @@
     cameraView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, Screen_width, Screen_height/2)];
     [self.view insertSubview:cameraView atIndex:0];
     _camera = [[Camera alloc]init];
+    _camera.frameNum = _frameNum;
     [_camera embedLayerWithView:cameraView];
     dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
     [_camera.deviceVideoOutput setSampleBufferDelegate:self queue:queue];
@@ -84,7 +85,7 @@
     [self.view.layer addSublayer:progressLayer];
     CABasicAnimation *countTime = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
     countTime.toValue = @0;
-    countTime.duration = 5.0f;
+    countTime.duration = _cameraTime;
     countTime.removedOnCompletion = NO;
     countTime.fillMode = kCAFillModeForwards;
     [progressLayer addAnimation:countTime forKey:@"progressAni"];
@@ -150,28 +151,17 @@
                 }];
                 return;
             }
-            else{
-                [timer invalidate];
-                NSLog(@"%@",imagesArray);
-                NSLog(@"totle=%ld",(unsigned long)imagesArray.count);
-                [_camera stopCamera];
-                isStart = NO;
-                [progressLayer removeFromSuperlayer];
-                [tipsLabel removeFromSuperview];
-                startButton.hidden = YES;
-                //预览gif动画
-                preView.animationImages = imagesArray;
-                preView.animationDuration = time;
-                preView.animationRepeatCount = 0;
-                preView.hidden = NO;
-                cameraView.hidden = YES;
-                [preView startAnimating];
+            else if(time >=1 && time < _cameraTime){
+                [self finishCamera];
             }
         }
     }
 }
--(void)countDown:(NSTimer*)timer{
+-(void)countDown:(NSTimer*)timerer{
     time++;
+    if (time >= _cameraTime) {
+        [self finishCamera];
+    }
     NSLog(@"%ld",(long)time);
 }
 -(void)resetCamera:(UIBarButtonItem*)sender{
@@ -181,6 +171,23 @@
     [startButton appearAnimation];
     preView.hidden = YES;
     [imagesArray removeAllObjects];
+}
+- (void)finishCamera{
+    [timer invalidate];
+    NSLog(@"%@",imagesArray);
+    NSLog(@"totle=%ld",(unsigned long)imagesArray.count);
+    [_camera stopCamera];
+    isStart = NO;
+    [progressLayer removeFromSuperlayer];
+    [tipsLabel removeFromSuperview];
+    startButton.hidden = YES;
+    //预览gif动画
+    preView.animationImages = imagesArray;
+    preView.animationDuration = time;
+    preView.animationRepeatCount = 0;
+    preView.hidden = NO;
+    cameraView.hidden = YES;
+    [preView startAnimating];
 }
 -(void)done:(UIBarButtonItem*)sender{
     //push viewcontroller
