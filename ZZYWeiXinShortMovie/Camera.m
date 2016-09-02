@@ -133,7 +133,10 @@
     [_session beginConfiguration];
     NSError *error;
     if ([_device lockForConfiguration:&error]) {
-        NSLog(@"%@",_device.activeFormat.videoSupportedFrameRateRanges);//可以查看设备的支持的拍摄帧数范围
+        NSLog(@"%@",[_device.activeFormat.videoSupportedFrameRateRanges lastObject]);//可以查看设备的支持的拍摄帧数范围
+        if (_frameNum>120 || _frameNum <3) {
+            _frameNum = 60;
+        }
         [_device setActiveVideoMaxFrameDuration:CMTimeMake(1, (int)_frameNum)];
         [_device setActiveVideoMinFrameDuration:CMTimeMake(1, (int)_frameNum)];
         [_device unlockForConfiguration];
