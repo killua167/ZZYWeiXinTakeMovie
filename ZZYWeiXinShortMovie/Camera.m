@@ -12,7 +12,7 @@
 -(instancetype)init{
     if (self = [super init]) {
         _session = [[AVCaptureSession alloc]init];
-        [_session setSessionPreset:AVCaptureSessionPresetMedium];
+        [_session setSessionPreset:AVCaptureSessionPresetMedium];//设置拍摄品质
         _device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         NSError *error;
         //添加输入
@@ -30,13 +30,26 @@
         if ([_session canAddOutput:_deviceVideoOutput]) {
             [_session addOutput:_deviceVideoOutput];
         }
-        //配置默认帧数1秒10帧
-        [_session beginConfiguration];
-        if ([_device lockForConfiguration:&error]) {
-            [_device setActiveVideoMaxFrameDuration:CMTimeMake(1, 10)];
-            [_device setActiveVideoMinFrameDuration:CMTimeMake(1, 10)];
-            [_device unlockForConfiguration];
+        
+        //配置默认帧数
+        for(AVCaptureDeviceFormat *vFormat in [_device formats] )
+        {
+            CMFormatDescriptionRef description= vFormat.formatDescription;
+            float maxrate=((AVFrameRateRange*)[vFormat.videoSupportedFrameRateRanges objectAtIndex:0]).maxFrameRate;
+            
+            if(maxrate>59 && CMFormatDescriptionGetMediaSubType(description)==kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
+            {
+                if ( YES == [_device lockForConfiguration:NULL] )
+                {
+                    _device.activeFormat = vFormat;
+                    [_device setActiveVideoMinFrameDuration:CMTimeMake(10,600)];
+                    [_device setActiveVideoMaxFrameDuration:CMTimeMake(10,600)];
+                    [_device unlockForConfiguration];
+                    NSLog(@"formats  %@ %@ %@",vFormat.mediaType,vFormat.formatDescription,vFormat.videoSupportedFrameRateRanges);
+                }
+            }
         }
+        
         [_session commitConfiguration];
         [self focusAtPoint:_cameraView.center];
     }
@@ -120,6 +133,7 @@
     [_session beginConfiguration];
     NSError *error;
     if ([_device lockForConfiguration:&error]) {
+        NSLog(@"%@",_device.activeFormat.videoSupportedFrameRateRanges);//可以查看设备的支持的拍摄帧数范围
         [_device setActiveVideoMaxFrameDuration:CMTimeMake(1, (int)_frameNum)];
         [_device setActiveVideoMinFrameDuration:CMTimeMake(1, (int)_frameNum)];
         [_device unlockForConfiguration];

@@ -13,21 +13,31 @@
 #import <QuartzCore/QuartzCore.h>
 @interface TakeMovieViewController () <AVCaptureVideoDataOutputSampleBufferDelegate,UIGestureRecognizerDelegate>
 {
-    Camera *_camera;
-    UIView *cameraView;
-    NSMutableArray *imagesArray;
-    UIImageView *preView;
     BOOL isStart;
     BOOL isCancel;
     CALayer *progressLayer;
-    StartButton *startButton;
     UILabel *tipsLabel;
     NSTimer *timer;
     NSInteger time;
 }
+@property (strong, nonatomic) Camera *camera;
+@property (strong, nonatomic) UIView *cameraView;
+@property (strong, nonatomic) UIImageView *preView;
+@property (strong, nonatomic) StartButton *startButton;
+@property (strong, nonatomic) NSMutableArray *imagesArray;
 @end
 
 @implementation TakeMovieViewController
+
+- (instancetype)initWithFrameNum:(NSInteger)frameNum cameraTime:(CGFloat)cameraTime resultImages:(resultImagesBlock)result{
+    self = [super init];
+    if (self) {
+        _frameNum = frameNum;
+        _cameraTime = cameraTime;
+        self.block = result;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -35,9 +45,9 @@
     self.navigationController.navigationBar.tintColor = [UIColor greenColor];
     self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
     isStart = NO;
-    imagesArray = [NSMutableArray array];
+    self.imagesArray = [NSMutableArray array];
     self.view.backgroundColor = [UIColor blackColor];
-    [self initCamera];//初始化摄像头
+    [self initCameraView];//初始化摄像头
     [self initPreView];//初始化预览gif的view
     [self initStartButton];//初始化开始拍摄按钮
     //相机权限受限提示
@@ -48,35 +58,26 @@
     //拍摄手势
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panAction:)];
     panGesture.delegate = self;
-    [startButton addGestureRecognizer:panGesture];
+    [self.startButton addGestureRecognizer:panGesture];
     UILongPressGestureRecognizer *longPressGeture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(startAction:)];
     longPressGeture.delegate = self;
     longPressGeture.minimumPressDuration = 0.1;
-    [startButton addGestureRecognizer:longPressGeture];
+    [self.startButton addGestureRecognizer:longPressGeture];
     
     UIBarButtonItem *redoButton = [[UIBarButtonItem alloc]initWithTitle:@"重拍" style:UIBarButtonItemStylePlain target:self action:@selector(resetCamera:)];
     UIBarButtonItem *finishButton = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(done:)];
     self.navigationItem.rightBarButtonItems = @[finishButton,redoButton];
 }
--(void)initCamera{
-    cameraView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, Screen_width, Screen_height/2)];
-    [self.view insertSubview:cameraView atIndex:0];
-    _camera = [[Camera alloc]init];
-    _camera.frameNum = _frameNum;
-    [_camera embedLayerWithView:cameraView];
-    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
-    [_camera.deviceVideoOutput setSampleBufferDelegate:self queue:queue];
-    [_camera startCamera];
+-(void)initCameraView{
+    _cameraView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, Screen_width, Screen_height/2)];
+    [self.view insertSubview:_cameraView atIndex:0];
+    [self.camera startCamera];
 }
 -(void)initPreView{
-    preView = [[UIImageView alloc]initWithFrame:cameraView.bounds];
-    preView.contentMode = UIViewContentModeScaleAspectFill;
-    [self.view addSubview:preView];
-    preView.hidden = YES;
+    [self.view addSubview:self.preView];
 }
 -(void)initStartButton{
-    startButton = [[StartButton alloc]initWithFrame:CGRectMake(Screen_width/4, Screen_height/2+Screen_height/16, Screen_width/2, Screen_width/2)];
-    [self.view addSubview:startButton];
+    [self.view addSubview:self.startButton];
 }
 -(void)initProgress{
     progressLayer = [CALayer layer];
@@ -112,7 +113,7 @@
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         isStart = YES;
         isCancel = NO;
-        [startButton disappearAnimation];
+        [self.startButton disappearAnimation];
         [self initProgress];
         tipsLabel = [[UILabel alloc]initWithFrame:CGRectMake(Screen_width/2-42, Screen_height/2-30, 84, 20)];
         tipsLabel.font = [UIFont systemFontOfSize:14];
@@ -131,16 +132,16 @@
             [timer invalidate];
             [progressLayer removeFromSuperlayer];
             [tipsLabel removeFromSuperview];
-            [startButton appearAnimation];
+            [self.startButton appearAnimation];
             return;
         }
         else{
             if (time < 1) {
                 isStart = NO;
                 [timer invalidate];
-                [imagesArray removeAllObjects];
+                [self.imagesArray removeAllObjects];
                 [progressLayer removeFromSuperlayer];
-                [startButton appearAnimation];
+                [self.startButton appearAnimation];
                 tipsLabel.text = @"手指不要放开";
                 tipsLabel.textColor = [UIColor whiteColor];
                 tipsLabel.backgroundColor = [UIColor redColor];
@@ -165,32 +166,33 @@
     NSLog(@"%ld",(long)time);
 }
 -(void)resetCamera:(UIBarButtonItem*)sender{
-    cameraView.hidden = NO;
-    [_camera startCamera];
-    startButton.hidden = NO;
-    [startButton appearAnimation];
-    preView.hidden = YES;
-    [imagesArray removeAllObjects];
+    _cameraView.hidden = NO;
+    [self.camera startCamera];
+    self.startButton.hidden = NO;
+    [self.startButton appearAnimation];
+    self.preView.hidden = YES;
+    [self.imagesArray removeAllObjects];
 }
 - (void)finishCamera{
     [timer invalidate];
-    NSLog(@"%@",imagesArray);
-    NSLog(@"totle=%ld",(unsigned long)imagesArray.count);
-    [_camera stopCamera];
+    NSLog(@"%@",self.imagesArray);
+    NSLog(@"totle=%ld",(unsigned long)self.imagesArray.count);
+    [self.camera stopCamera];
     isStart = NO;
     [progressLayer removeFromSuperlayer];
     [tipsLabel removeFromSuperview];
-    startButton.hidden = YES;
+    self.startButton.hidden = YES;
     //预览gif动画
-    preView.animationImages = imagesArray;
-    preView.animationDuration = time;
-    preView.animationRepeatCount = 0;
-    preView.hidden = NO;
-    cameraView.hidden = YES;
-    [preView startAnimating];
+    self.preView.animationImages = self.imagesArray;
+    self.preView.animationDuration = time;
+    self.preView.animationRepeatCount = 0;
+    self.preView.hidden = NO;
+    _cameraView.hidden = YES;
+    [self.preView startAnimating];
 }
 -(void)done:(UIBarButtonItem*)sender{
-    //push viewcontroller
+    self.block(self.imagesArray);
+    [self.navigationController popViewControllerAnimated:YES];
 }
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     return YES;
@@ -199,7 +201,7 @@
     if (isStart) {
         UIImage *image = [self imageFromSampleBuffer:&sampleBuffer];
         image = [self normalizedImage:image];
-        [imagesArray addObject:image];
+        [self.imagesArray addObject:image];
     }
 }
 -(UIImage*) imageFromSampleBuffer:(CMSampleBufferRef*)sampleBuffer{
@@ -230,6 +232,34 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - lazy load
+- (Camera*)camera{
+    if (!_camera) {
+        _camera = [[Camera alloc]init];
+        _camera.frameNum = _frameNum;
+        [_camera embedLayerWithView:_cameraView];
+        dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+        [_camera.deviceVideoOutput setSampleBufferDelegate:self queue:queue];
+    }
+    return _camera;
+}
+
+- (UIView*)preView{
+    if (!_preView) {
+        _preView = [[UIImageView alloc]initWithFrame:_cameraView.bounds];
+        _preView.contentMode = UIViewContentModeScaleAspectFill;
+        _preView.hidden = YES;
+    }
+    return _preView;
+}
+
+- (StartButton*)startButton{
+    if (!_startButton) {
+        _startButton = [[StartButton alloc]initWithFrame:CGRectMake(Screen_width/4, Screen_height/2+Screen_height/16, Screen_width/2, Screen_width/2)];
+    }
+    return _startButton;
 }
 
 /*

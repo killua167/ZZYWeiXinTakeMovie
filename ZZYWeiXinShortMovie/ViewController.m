@@ -11,7 +11,8 @@
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *setFrameTF;
 @property (weak, nonatomic) IBOutlet UITextField *setCameraTimeTF;
-
+@property (weak, nonatomic) IBOutlet UIImageView *ImageView;
+@property (strong, nonatomic) NSArray *images;
 @end
 
 @implementation ViewController
@@ -21,9 +22,24 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 - (IBAction)takeAction:(id)sender {
-    TakeMovieViewController *TMVC = [[TakeMovieViewController alloc]init];
-    TMVC.frameNum = [_setFrameTF.text integerValue];
-    TMVC.cameraTime = [_setCameraTimeTF.text floatValue];
+    [_setFrameTF resignFirstResponder];
+    [_setCameraTimeTF resignFirstResponder];
+    //帧数默认范围3-120
+    TakeMovieViewController *TMVC = [[TakeMovieViewController alloc]initWithFrameNum:[_setFrameTF.text integerValue]
+                                                                          cameraTime:[_setCameraTimeTF.text floatValue]
+                                                                        resultImages:^(NSArray *images) {
+                                                                            self.images = images;
+                                                                            
+                                                                            self.ImageView.hidden = NO;
+                                                                            self.ImageView.animationImages = self.images;
+                                                                            self.ImageView.animationDuration = 5;
+                                                                            self.ImageView.animationRepeatCount = 0;
+                                                                            [self.ImageView startAnimating];
+                                                                          }];
+    
+    
+//    TMVC.frameNum = [_setFrameTF.text integerValue];
+//    TMVC.cameraTime = [_setCameraTimeTF.text floatValue];
     [self.navigationController pushViewController:TMVC animated:YES];
 }
 

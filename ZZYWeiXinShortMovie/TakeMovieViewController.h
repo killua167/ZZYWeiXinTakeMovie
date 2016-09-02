@@ -9,6 +9,9 @@
 #import "ViewController.h"
 
 @interface TakeMovieViewController : ViewController
+typedef void(^resultImagesBlock)(NSArray*);
+@property (nonatomic, copy) resultImagesBlock block;
 @property (nonatomic,assign) CGFloat cameraTime;
 @property (nonatomic,assign) NSInteger frameNum;
+- (instancetype)initWithFrameNum:(NSInteger)frameNum cameraTime:(CGFloat)cameraTime resultImages:(resultImagesBlock)result;
 @end
